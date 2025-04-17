@@ -2,8 +2,7 @@ pipeline {
     agent any
 
     environment {
-        def DOCKER_HUB_CREDENTIALS = credentials('Jenkins-Docker') // Add your Docker Hub credentials in Jenkins
-        def DOCKER_IMAGE_TAG = 'latest'
+        DOCKER_HUB_CREDENTIALS = credentials('Jenkins-Docker') // Optional: for Docker Hub auth
     }
 
     stages {
@@ -13,7 +12,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Maven Package') {
             steps {
                 bat 'mvn clean package -DskipTests'
             }
@@ -25,18 +24,10 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Start Services with Docker Compose') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}")
-                }
-            }
-        }
-
-        stage('Deploy') {
-            steps {
-                script {
-                    bat "docker run -d -p 1127:1127 ${DOCKER_IMAGE_NAME}:${DOCKER_IMAGE_TAG}"
+                    bat 'docker-compose up -d --build'
                 }
             }
         }
@@ -44,10 +35,13 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo 'Pipeline executed successfully!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed. Please check logs.'
+        }
+        cleanup {
+            cleanWs() // only cleans Jenkins workspace, not containers
         }
     }
 }
