@@ -1,0 +1,26 @@
+version: 3.8
+
+services:
+  spring-boot:
+    build:
+      context: .
+    ports:
+      - "1127:1127"
+    depends_on:
+      - mysql
+    restart: unless-stopped
+  
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: Devaseesh*2005
+      MYSQL_DATABASE: jfsdsdp27
+    volumes:
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+volumes:
+  mysql_data:
