@@ -6,4 +6,4 @@ COPY target/*.war app.war
 
 EXPOSE 1127
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.war"]
