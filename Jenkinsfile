@@ -1,9 +1,7 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_HUB_CREDENTIALS = credentials('Jenkins-Docker') // Optional: for Docker Hub auth
-    }
+    
 
     stages {
         stage('Checkout') {
